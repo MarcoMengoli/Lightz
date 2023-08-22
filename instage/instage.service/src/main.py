@@ -1,11 +1,39 @@
 from dmx import Colour, DMXInterface, DMXLight3Slot, DMXUniverse, DMXLight
 from time import sleep
 from typing import List
+import asyncio
+#from hbmqtt.client import MQTTClient, ClientException
+#from hbmqtt.mqtt.constants import QOS_1
+from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta
 
-PURPLE = Colour(255, 0, 255)
+print("HI")
+BROKER_URL = "mqtt://your_mqtt_broker"
+executor = ThreadPoolExecutor(max_workers=1)
+
+# Shared object to track the last write time
+class SharedObject:
+    def __init__(self):
+        self._last_write_time = datetime.min
+        self._channels = [0] * 512
+
+    def should_write(self):
+        # If last write was more than a second ago
+        return datetime.now() - self._last_write_time > timedelta(seconds=1)
+
+    def update_write_time(self):
+        self._last_write_time = datetime.now()
+        
+    def set(self, channel, value):
+        c = int(max(1, min(channel, 512)))
+        v = int(max(0, min(value, 255)))
+        self._channels[c-1] = v
+
+shared = SharedObject()
+i = shared._last_write_time
 
 
-class DMXChannels(DMXLight):
+class AllDmxChannels(DMXLight):
     def __init__(self, address: int = 1):
         super().__init__(address=address)
         self._channels = [0] * 512
@@ -20,7 +48,6 @@ class DMXChannels(DMXLight):
         self._channels[c-1] = v
 
     def serialise(self) -> List[int]:
-        #return super().serialise() + self._channels
         return self._channels
 
 x = 1
@@ -31,64 +58,35 @@ m = 6
 c = 7
 s = 2#60/128
 
-# Open an interface
-with DMXInterface("FT232R") as interface:
-    # Create a universe
-    universe = DMXUniverse()
 
-    # Define a light
-    #light = DMXLight3Slot(address=1)
-    channels = DMXChannels(address=1)
+channels = AllDmxChannels(address=1)
+channels.set(x, 255)
+channels.set(r, 255)
+channels.set(g, 0)
+channels.set(b, 0)
 
-    # Add the light to a universe
-    #universe.add_light(light)
-    universe.add_light(channels)
+async def send_dmx(interface,universe):
+    if shared.should_write():
+        interface.set_frame(universe.serialise())
+        interface.send_update()
+        shared.update_write_time()
 
-    # Update the interface's frame to be the universe's current state
-    interface.set_frame(universe.serialise())
-
-    # Send an update to the DMX network
-    interface.send_update()
-
+# Function to periodically send DMX
+async def periodic_send_dmx(interface,universe):
     while True:
-        # Set light to purple
-        #light.set_colour(PURPLE)
-
-        channels.set(x, 255)
-        channels.set(r, 255)
-        channels.set(g, 0)
-        channels.set(b, 0)
-        #channels.set(m, 252)
-        #channels.set(c, 190)
-
-        # Update the interface's frame to be the universe's current state
-        interface.set_frame(universe.serialise())
-
-        # Send an update to the DMX network
-        interface.send_update()
-
-        sleep(s)
+        await send_dmx(interface,universe)
+        await asyncio.sleep(1)
         
-        channels.set(x, 255)
-        channels.set(r, 0)
-        channels.set(g, 255)
-        channels.set(b, 0)
-        #channels.set(m, 252)
-        #channels.set(c, 190)
-        interface.set_frame(universe.serialise())
-        interface.send_update()
 
-        sleep(s)
-        
-        channels.set(x, 255)
-        channels.set(r, 0)
-        channels.set(g, 0)
-        channels.set(b, 255)
-        #channels.set(m, 252)
-        #channels.set(c, 190)
-        interface.set_frame(universe.serialise())
-        interface.send_update()
+async def main():
+    with DMXInterface("FT232R") as interface:
+        universe = DMXUniverse()
+        universe.add_light(channels)
+        # Start the periodic DMX send
+        await periodic_send_dmx(interface,universe)
 
-        
-        sleep(s)
- 
+# Run the event loop
+try:
+    asyncio.run(main())
+except KeyboardInterrupt:
+    print("Gracefully shutting down...")
