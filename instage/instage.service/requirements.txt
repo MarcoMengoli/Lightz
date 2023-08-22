@@ -1,3 +1,4 @@
+paho-mqtt==1.6.1
 PyDMX==0.1.0
 PyDMX-Drivers-FTDI==0.1.0
 pylibftdi==0.21.0
