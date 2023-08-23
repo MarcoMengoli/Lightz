@@ -56,12 +56,12 @@ const LedParLight: Device = {
                 Red: 15,
                 Green: 45,
                 Blue: 75,
-                'Warm White': 110,
+                WarmWhite: 110,
                 Yellow: 140,
                 Violet: 170,
-                Change: 200,
+                Cyan: 200,
                 White: 230,
-                'Change color': 252
+                ChangeColor: 252
             },
             defaultValue: 0
         }
