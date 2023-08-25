@@ -10,36 +10,45 @@ print("START")
 
 
 def main():
-    redis_port = int(os.environ.get('REDIS_PORT', 6379))  # Default to 6379 if the environment variable is not set
-    r = redis.Redis(host='redis', port=redis_port, db=0)
+    r = None
+    while r is None:
+        r = None
+        try:
+            redis_port = int(os.environ.get('REDIS_PORT', 6379))  # Default to 6379 if the environment variable is not set
+            r = redis.Redis(host='localhost', port=redis_port, db=0)
+            r.ping()
 
-    with DMXInterface("FT232R") as interface:
-        universe = DMXUniverse()
-        all_channels = DmxWriter(address=1)
-        universe.add_light(all_channels)
+            with DMXInterface("FT232R") as interface:
+                universe = DMXUniverse()
+                all_channels = DmxWriter(address=1)
+                universe.add_light(all_channels)
 
-        interface.set_frame(universe.serialise())
-        interface.send_update()
-        
-        while True:
-
-            retrieved_dict = r.hgetall('dmx-channels')
-
-            for k, v in retrieved_dict.items():
-                key = int(k.decode('utf-8'))
-                value = int(v.decode('utf-8'))
+                interface.set_frame(universe.serialise())
+                interface.send_update()
                 
-                all_channels.set(key, value)
+                while True:
 
-            interface.set_frame(universe.serialise())
-            interface.send_update()
+                    retrieved_dict = r.hgetall('dmx')
 
-            # # Convert the retrieved values back to integers
-            # int_dict = {int(k.decode('utf-8')): int(v.decode('utf-8')) for k, v in retrieved_dict.items()}
+                    for k, v in retrieved_dict.items():
+                        key = int(k.decode('utf-8'))
+                        value = int(v.decode('utf-8'))
+                        
+                        all_channels.set(key, value)
 
-            # data = r.lrange('dmx-channels', 0, -1)
-            # print([item.decode('utf-8') for item in data])
-            time.sleep(0.5)
+                    interface.set_frame(universe.serialise())
+                    interface.send_update()
+
+                    # # Convert the retrieved values back to integers
+                    # int_dict = {int(k.decode('utf-8')): int(v.decode('utf-8')) for k, v in retrieved_dict.items()}
+
+                    # data = r.lrange('dmx-channels', 0, -1)
+                    # print([item.decode('utf-8') for item in data])
+                    time.sleep(0.5)
+        except Exception as e:
+            print(f"Error: {e}. Retrying in 1 second...")
+            time.sleep(1)
+            r = None
 
 if __name__ == "__main__":
     main()
