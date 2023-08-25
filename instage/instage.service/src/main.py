@@ -15,7 +15,9 @@ def main():
         r = None
         try:
             redis_port = int(os.environ.get('REDIS_PORT', 6379))  # Default to 6379 if the environment variable is not set
-            r = redis.Redis(host='localhost', port=redis_port, db=0)
+            redis_host = os.getenv('REDIS_HOST', 'localhost')     # Default to localhost if the environment variable is not set
+            
+            r = redis.Redis(host=redis_host, port=redis_port, db=0)
             r.ping()
 
             with DMXInterface("FT232R") as interface:

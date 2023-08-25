@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  myservice:
+    build: ./instage.service
+    image: instage-service:latest
+    privileged: true
+    environment:
+      REDIS_HOST: redisdocker 
+      REDIS_PORT: 6379
+      
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
