@@ -6,27 +6,29 @@ class DeviceScene:
         self.timer = timer
         self.base_address = base_address
         self.values = [[min(255, max(0, val)) for val in sublist] for sublist in values]
-        self._current_tick = 0
-        self._current_set_index = 0
         self._tick_millis = self.timer # default is like timer, but would be <=
+        self.reset()
     
     def tick(self) -> dict[int,int]:
         try:
+            values = self.get_values()
             ticks_before_enhance = self.timer / self._tick_millis
             if self._current_tick + 1 == ticks_before_enhance:
                 self._current_tick = 0
                 self._current_set_index = (self._current_set_index + 1) % len(self.values)
-                # return True
             else:
                 self._current_tick = self._current_tick + 1
-            # return False
-            values = self.get_values()
+            
             return values
         
         except Exception as e:
             print(f"Error calculating device scene tick: {e}")
             return False
 
+    def reset(self) -> None:
+        self._current_tick = 0
+        self._current_set_index = 0
+    
     def get_values(self) -> dict[int,int]:
         current_values = self.values[self._current_set_index % len(self.values)]
         values = {self.base_address + i: value for i, value in enumerate(current_values)}
@@ -43,6 +45,10 @@ class Scene:
 
         for dev in self.device_scenes:
             dev.set_tick_value(self.tick_millis)
+
+    def reset(self) -> None:
+        for dev in self.device_scenes:
+            dev.reset()
 
     def tick(self) -> dict[int,int]:
         merged_dict = {}
@@ -99,15 +105,24 @@ class Chore:
         try:
             ticks_before_enhance = self.duration_seconds * 1000 / self.get_current_tick_millis_timer()
             if self._current_tick + 1 == ticks_before_enhance:
+                self.get_current_scene().reset()
                 self._current_tick = 0
                 self._current_scene_index = (self._current_scene_index + 1) % len(self.scenes)
             else:
                 self._current_tick = self._current_tick + 1
-            return self.get_current_scene().tick()
+            
+            values = self.get_current_scene().tick()
+            return values
         
         except Exception as e:
             print(f"Error calculating chore tick: {e.with_traceback}")
             return False
+        
+    def reset(self) -> None:
+        self._current_tick = 0
+        self._current_scene_index = 0
+        for scene in self.scenes:
+            scene.reset()
         
     def get_values(self) -> dict[int,int]:
         return self.get_current_scene().get_values()
