@@ -7,6 +7,9 @@ from mongo_gateway import MongoGateway
 
 print("START")
 
+def fill_main_chores(gateway):
+    pass
+
 
 def main():
 
@@ -22,6 +25,8 @@ def main():
     
             gateway = MongoGateway()
             gateway.open()
+
+            fill_main_chores(gateway)
 
             # chore_name = "Test"
             # chore = gateway.find_chore_by_name(chore_name)
@@ -41,12 +46,15 @@ def main():
             #         print(f"Values: {device_scene.values}")
             #     print("------------------------------")
 
+            default_chore_name = "AllBlack"
 
-            chore_name = r.get('current_chore')
+            chore_name = r.get('current_chore').decode('utf-8')
             if not chore_name:
-                chore_name = "AllBlack"
+                chore_name = default_chore_name
 
             chore = gateway.find_chore_by_name(chore_name)
+            if not chore:
+                chore = gateway.find_chore_by_name(default_chore_name)
 
             i = 0
             while True:
@@ -60,7 +68,7 @@ def main():
 
                 time.sleep(timer/1000)
 
-                name = r.get('current_chore')
+                name = r.get('current_chore').decode('utf-8')
                 if name != chore_name:
                     chore = gateway.find_chore_by_name(chore_name)
             
