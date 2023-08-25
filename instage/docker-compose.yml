@@ -1,15 +1,36 @@
 version: '3'
 
 services:
-  myservice:
+  instageservice:
     build: ./instage.service
     image: instage-service:latest
     privileged: true
     environment:
       REDIS_HOST: redisdocker 
       REDIS_PORT: 6379
+
+  
+  instagescheduler:
+    build: ./instage.scheduler
+    image: instage-scheduler:latest
+    privileged: true
+    environment:
+      REDIS_HOST: redisdocker 
+      REDIS_PORT: 6379
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
       
   redis:
     image: redis:latest
     ports:
       - "6379:6379"
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  volumes:
+    mongodata:
