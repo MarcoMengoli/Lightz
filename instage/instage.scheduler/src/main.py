@@ -23,25 +23,31 @@ def main():
             gateway = MongoGateway()
             gateway.open()
 
-            chore_name = "Test"
+            # chore_name = "Test"
+            # chore = gateway.find_chore_by_name(chore_name)
+
+            # if not chore:
+            #     print(f"Chore {chore_name} not found")
+            #     exit()
+
+            # print(chore.name)
+            # print(chore.duration_seconds)
+            # for scene in chore.scenes:
+            #     print(f"Scene Name: {scene.name}")
+            #     for device_scene in scene.device_scenes:
+            #         print(f"Device Name: {device_scene.name}")
+            #         print(f"Timer: {device_scene.timer}")
+            #         print(f"Base Address: {device_scene.base_address}")
+            #         print(f"Values: {device_scene.values}")
+            #     print("------------------------------")
+
+
+            chore_name = r.get('current_chore')
+            if not chore_name:
+                chore_name = "AllBlack"
+
             chore = gateway.find_chore_by_name(chore_name)
 
-            if not chore:
-                print(f"Chore {chore_name} not found")
-                exit()
-
-            print(chore.name)
-            print(chore.duration_seconds)
-            for scene in chore.scenes:
-                print(f"Scene Name: {scene.name}")
-                for device_scene in scene.device_scenes:
-                    print(f"Device Name: {device_scene.name}")
-                    print(f"Timer: {device_scene.timer}")
-                    print(f"Base Address: {device_scene.base_address}")
-                    print(f"Values: {device_scene.values}")
-                print("------------------------------")
-
-            gateway.close()
             i = 0
             while True:
 
@@ -50,11 +56,20 @@ def main():
                 values = chore.tick()
                 print(f"{i} - {chore.get_current_scene().name} - {values}")
 
+                r.hset("ch", mapping=values)
+
                 time.sleep(timer/1000)
+
+                name = r.get('current_chore')
+                if name != chore_name:
+                    chore = gateway.find_chore_by_name(chore_name)
+            
+            gateway.close()
 
         except Exception as e:
             print(f"Error: {e}. Retrying in 1 second...")
             time.sleep(1)
+            gateway.close()
             r = None
 
 
