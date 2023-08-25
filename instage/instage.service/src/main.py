@@ -28,13 +28,14 @@ def main():
                 
                 while True:
 
-                    retrieved_dict = r.hgetall('dmx')
+                    retrieved_dict = r.hgetall('ch')
 
                     for k, v in retrieved_dict.items():
                         key = int(k.decode('utf-8'))
                         value = int(v.decode('utf-8'))
                         
-                        all_channels.set(key, value)
+                        if 1 <= key <= 512 and 0 <= value <= 255:
+                            all_channels.set(key, value)
 
                     interface.set_frame(universe.serialise())
                     interface.send_update()
