@@ -1,0 +1,31 @@
+[{
+  "_id": {
+    "$oid": "64e910d8d043901df792e851"
+  },
+  "name": "AllBlack",
+  "timer": 1000000,
+  "scene_names": [
+    "BlackScene"
+  ]
+},
+{
+  "_id": {
+    "$oid": "64e914d1d043901df792e855"
+  },
+  "name": "AllWhite",
+  "timer": 1000000,
+  "scene_names": [
+    "WhiteScene"
+  ]
+},
+{
+  "_id": {
+    "$oid": "64e924edd043901df792e858"
+  },
+  "name": "Test",
+  "timer": 10,
+  "scene_names": [
+    "TestAScene",
+    "TestBScene"
+  ]
+}]
