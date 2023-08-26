@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chores App</title>
+    <style>
+      /* Basic styling */
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      #choresContainer {
+        display: flex;
+        flex-direction: column; /* This makes it vertical */
+        align-items: start; /* Align buttons to the start of the container */
+      }
+      #choresContainer button {
+        margin: 5px 0;
+      } /* Adjusted margin for vertical layout */
+    </style>
+    <script src="script.js" defer></script>
+  </head>
+  <body onload="loadChores()">
+    <div class="container">
+      <h2>Chores</h2>
+      <div id="choresContainer">
+        <!-- Buttons will be added here by the script -->
+      </div>
+    </div>
+  </body>
+</html>
