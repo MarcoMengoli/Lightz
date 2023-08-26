@@ -3,7 +3,8 @@ import redis
 import time
 import os
 from model import DeviceScene, Scene, Chore
-from mongo_gateway import MongoGateway
+#from mongo_gateway import MongoGateway
+from inmem_gateway import InMemGateway
 
 print("START")
 
@@ -23,10 +24,15 @@ def main():
             r = redis.Redis(host=redis_host, port=redis_port, db=0)
             r.ping()
     
-            gateway = MongoGateway()
+            # gateway = MongoGateway()
+            # gateway.open()
+            gateway = InMemGateway()
             gateway.open()
 
-            fill_main_chores(gateway)
+            a = gateway.find_chore_by_name("AllBlack")
+            b = gateway.find_chore_by_name("AllWhite")
+            c = gateway.find_chore_by_name("AllStrobe")
+            # fill_main_chores(gateway)
 
             # chore_name = "Test"
             # chore = gateway.find_chore_by_name(chore_name)
