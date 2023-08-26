@@ -1,65 +1,68 @@
-import express from 'express'
-//import { MqttGateway, MqttConfig } from './gateways/MqttGateway'
-import mqtt from 'mqtt'
-import { connect } from 'mqtt'
-import { getArray } from './models/ArrayValues'
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import redis from 'redis';
+import bodyParser from 'body-parser';
 
-const app = express()
-const PORT = 3000
+const app = express();
+const PORT: number = 3000;
 
-interface MqttConfig {
-    host: string
-    topic: string
-    port?: number
+// Connect to MongoDB
+const MONGO_HOST: string = process.env.MONGO_HOST || 'localhost';
+const MONGO_PORT: number = Number(process.env.MONGO_PORT) || 27017;
+
+mongoose.connect(`mongodb://${MONGO_HOST}:${MONGO_PORT}/mydb`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
+
+// Connect to Redis
+const REDIS_HOST: string = process.env.REDIS_HOST || 'localhost';
+const REDIS_PORT: number = Number(process.env.REDIS_PORT) || 6379;
+
+const redisClient = redis.createClient({
+    host: REDIS_HOST,
+    port: REDIS_PORT
+});
+redisClient.on('error', err => {
+    console.log('Redis error: ', err);
+});
+
+// MongoDB Model
+interface MyModelInterface extends mongoose.Document {
+    name: string;
 }
-// Usage
-const mqttConfig: MqttConfig = {
-    host: '192.168.1.126',
-    topic: 'test',
-    port: 1883
-}
 
-const clientId = `mqtt_${Math.random().toString(16).slice(3)}`
+const MySchema = new mongoose.Schema({
+    name: String
+});
 
-const connectUrl = `mqtt://${mqttConfig.host}:${mqttConfig.port}`
+const MyModel = mongoose.model<MyModelInterface>('MyModel', MySchema);
 
-const client = connect(connectUrl)
+app.use(bodyParser.json());
 
-// const client = mqtt.connect(connectUrl, {
-//     clientId,
-//     clean: true,
-//     connectTimeout: 4000,
-//     reconnectPeriod: 1000
-// })
+app.get('/names', async (req: Request, res: Response) => {
+    try {
+        const documents = await MyModel.find({});
+        const names = documents.map(doc => doc.name);
+        res.json(names);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
 
-client.on('connect', () => {
-    console.log('Connected')
-
-    function send() {
-        client.publish(mqttConfig.topic, getArray(), { qos: 0, retain: false }, error => {
-            if (error) {
-                console.error(error)
-            }
-        })
+app.post('/set-redis', (req: Request, res: Response) => {
+    const { key, value } = req.body;
+    
+    if (!key || !value) {
+        return res.status(400).send('Both key and value are required');
     }
 
-    const intervalId = setInterval(send, 500)
-})
-
-// const service = new MqttGateway(mqttConfig)
-// const dataArray: number[] = [...Array(512).keys()]
-// service.send(dataArray)
-
-////////////////////////////////////////////////////////////////
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
-
-app.get('/x', (req, res) => {
-    throw new Error('This is an example exception.')
-})
+    redisClient.set(key, value, (err) => {
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send('Value set successfully in Redis');
+    });
+});
 
 app.listen(PORT, () => {
-    console.log('Server listening on port ${PORT}')
-})
+    console.log(`Server is running on port ${PORT}`);
+});
