@@ -1,0 +1,248 @@
+[{
+  "_id": {
+    "$oid": "64e90dfed043901df792e84c"
+  },
+  "name": "BlackScene",
+  "device_scenes": [
+    {
+      "name": "Par001",
+      "timer": 1000,
+      "base_address": 1,
+      "values": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Par017",
+      "timer": 1000,
+      "base_address": 17,
+      "values": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Head033",
+      "timer": 1000,
+      "base_address": 33,
+      "values": [
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "64e914b5d043901df792e853"
+  },
+  "name": "WhiteScene",
+  "device_scenes": [
+    {
+      "name": "Par001",
+      "timer": 1000,
+      "base_address": 1,
+      "values": [
+        [
+          88888,
+          255,
+          255,
+          255,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Par017",
+      "timer": 1000,
+      "base_address": 17,
+      "values": [
+        [
+          255,
+          255,
+          255,
+          255,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Head033",
+      "timer": 1000,
+      "base_address": 33,
+      "values": [
+        [
+          255,
+          255,
+          255,
+          255
+        ]
+      ]
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "64e92549d043901df792e85a"
+  },
+  "name": "TestAScene",
+  "device_scenes": [
+    {
+      "name": "Par001",
+      "timer": 2000,
+      "base_address": 1,
+      "values": [
+        [
+          20,
+          0,
+          255,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          0,
+          0,
+          255,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Par017",
+      "timer": 4000,
+      "base_address": 17,
+      "values": [
+        [
+          20,
+          255,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          255,
+          255,
+          255,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Head033",
+      "timer": 1000,
+      "base_address": 33,
+      "values": [
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "64e925b0d043901df792e85b"
+  },
+  "name": "TestBScene",
+  "device_scenes": [
+    {
+      "name": "Par001",
+      "timer": 4000,
+      "base_address": 1,
+      "values": [
+        [
+          20,
+          255,
+          255,
+          255,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Par017",
+      "timer": 2000,
+      "base_address": 17,
+      "values": [
+        [
+          20,
+          255,
+          255,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          0,
+          255,
+          255,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "Head033",
+      "timer": 1000,
+      "base_address": 33,
+      "values": [
+        [
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  ]
+}]
