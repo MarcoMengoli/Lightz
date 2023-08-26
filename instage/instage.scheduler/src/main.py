@@ -30,8 +30,11 @@ def main():
             gateway.open()
 
             a = gateway.find_chore_by_name("AllBlack")
+            print(a.name)
             b = gateway.find_chore_by_name("AllWhite")
+            print(b.name)
             c = gateway.find_chore_by_name("AllStrobe")
+            print(c.name)
             # fill_main_chores(gateway)
 
             # chore_name = "Test"
@@ -77,6 +80,7 @@ def main():
                 
 
                 r.hset("ch", mapping=values)
+                print(f"{i} - {chore.get_current_scene().name} - {values}")
 
                 time.sleep(timer/1000)
 
@@ -84,11 +88,18 @@ def main():
                 name = None
                 if name_b:
                     name = name_b.decode('utf-8')
-                if name and name != chore_name:
-                    chore = gateway.find_chore_by_name(chore_name)
-                    print(f"{i} - {chore.get_current_scene().name} - {values}")
+                if name and name != chore.name:
+                    print(f"Different-{name}-{chore_name}")
+#                    chore = gateway.find_chore_by_name(name)
+                    if name == a.name:
+                        chore = a
+                    if name == b.name:
+                        chore = b
+                    if name == c.name:
+                        chore = c
+                    print(f"{i} - {chore.name} - {values}")
+                    print(f"NewChore-{chore.get_current_scene().name}")
             
-            gateway.close()
 
         except Exception as e:
             print(f"Error: {e}. Retrying in 1 second...")
