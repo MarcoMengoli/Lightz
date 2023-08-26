@@ -30,7 +30,7 @@ def main():
             gateway.open()
 
             bl = gateway.find_chore_by_name("AllBlack")
-            print(lb.name)
+            print(bl.name)
             wh = gateway.find_chore_by_name("AllWhite")
             print(wh.name)
             st = gateway.find_chore_by_name("AllStrobe")
