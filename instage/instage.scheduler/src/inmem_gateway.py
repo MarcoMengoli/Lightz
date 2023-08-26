@@ -46,8 +46,8 @@ class InMemGateway:
         self._c_scene = Scene("CScene", [self._c1,self._c2,self._c3, self._m1])
         self._c_chore = Chore("C", [self._c_scene], 60000)
         
-        self._chores = [self._white_chore, self._black_chore, self._strobe_chore, self._a_scene, self._b_scene, self._c_scene]
-        self._scenes = [self._white_scene, self._black_scene, self._strobe_scene, self._a_chore, self._b_chore, self._c_chore]
+        self._chores = [self._white_chore, self._black_chore, self._strobe_chore, self._a_chore, self._b_chore, self._c_chore]
+        self._scenes = [self._white_scene, self._black_scene, self._strobe_scene, self._a_scene, self._b_scene, self._c_scene]
 
     def find_all_scenes(self) -> list[Scene]:
         try:
@@ -66,7 +66,7 @@ class InMemGateway:
 
     def find_chore_by_name(self, name: str) -> Optional[Chore]:
         try:
-            filtered = [chore for chore in self._chores if chore.name in name]
+            filtered = [chore for chore in self._chores if chore.name == name]
             if len(filtered) != 1:
                 return None
             
