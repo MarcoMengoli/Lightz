@@ -6,7 +6,7 @@ services:
     image: instage-service:latest
     privileged: true
     environment:
-      REDIS_HOST: redisdocker 
+      REDIS_HOST: redis 
       REDIS_PORT: 6379
 
   
@@ -15,7 +15,7 @@ services:
     image: instage-scheduler:latest
     privileged: true
     environment:
-      REDIS_HOST: redisdocker 
+      REDIS_HOST: redis 
       REDIS_PORT: 6379
 #      MONGO_HOST: mongo
 #      MONGO_PORT: 27017

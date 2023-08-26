@@ -54,7 +54,11 @@ def main():
 
             default_chore_name = "AllBlack"
 
-            chore_name = r.get('current_chore').decode('utf-8')
+            chore_name_b = r.get('current_chore')
+            chore_name = None
+            
+            if chore_name_b:
+                chore_name = chore_name_b.decode('utf-8')
             if not chore_name:
                 chore_name = default_chore_name
 
@@ -63,20 +67,26 @@ def main():
                 chore = gateway.find_chore_by_name(default_chore_name)
 
             i = 0
+            print(f"{i} - {chore.get_current_scene().name}")
+            
             while True:
 
                 timer = chore.get_current_tick_millis_timer()
                 i = i + 1
                 values = chore.tick()
-                print(f"{i} - {chore.get_current_scene().name} - {values}")
+                
 
                 r.hset("ch", mapping=values)
 
                 time.sleep(timer/1000)
 
-                name = r.get('current_chore').decode('utf-8')
-                if name != chore_name:
+                name_b = r.get('current_chore')
+                name = None
+                if name_b:
+                    name = name_b.decode('utf-8')
+                if name and name != chore_name:
                     chore = gateway.find_chore_by_name(chore_name)
+                    print(f"{i} - {chore.get_current_scene().name} - {values}")
             
             gateway.close()
 
