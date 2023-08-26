@@ -29,31 +29,19 @@ def main():
             gateway = InMemGateway()
             gateway.open()
 
-            a = gateway.find_chore_by_name("AllBlack")
+            bl = gateway.find_chore_by_name("AllBlack")
+            print(lb.name)
+            wh = gateway.find_chore_by_name("AllWhite")
+            print(wh.name)
+            st = gateway.find_chore_by_name("AllStrobe")
+            print(st.name)
+            a = gateway.find_chore_by_name("A")
             print(a.name)
-            b = gateway.find_chore_by_name("AllWhite")
+            b = gateway.find_chore_by_name("B")
             print(b.name)
-            c = gateway.find_chore_by_name("AllStrobe")
+            c = gateway.find_chore_by_name("C")
             print(c.name)
-            # fill_main_chores(gateway)
 
-            # chore_name = "Test"
-            # chore = gateway.find_chore_by_name(chore_name)
-
-            # if not chore:
-            #     print(f"Chore {chore_name} not found")
-            #     exit()
-
-            # print(chore.name)
-            # print(chore.duration_seconds)
-            # for scene in chore.scenes:
-            #     print(f"Scene Name: {scene.name}")
-            #     for device_scene in scene.device_scenes:
-            #         print(f"Device Name: {device_scene.name}")
-            #         print(f"Timer: {device_scene.timer}")
-            #         print(f"Base Address: {device_scene.base_address}")
-            #         print(f"Values: {device_scene.values}")
-            #     print("------------------------------")
 
             default_chore_name = "AllBlack"
 
@@ -90,7 +78,13 @@ def main():
                     name = name_b.decode('utf-8')
                 if name and name != chore.name:
                     print(f"Different-{name}-{chore_name}")
-#                    chore = gateway.find_chore_by_name(name)
+                    chore = gateway.find_chore_by_name(name)
+                    if name == bl.name:
+                        chore = bl
+                    if name == wh.name:
+                        chore = wh
+                    if name == st.name:
+                        chore = st
                     if name == a.name:
                         chore = a
                     if name == b.name:
@@ -107,41 +101,6 @@ def main():
             r = None
 
 
-
-
-
-    #         with DMXInterface("FT232R") as interface:
-    #             universe = DMXUniverse()
-    #             all_channels = DmxWriter(address=1)
-    #             universe.add_light(all_channels)
-
-    #             interface.set_frame(universe.serialise())
-    #             interface.send_update()
-                
-    #             while True:
-
-    #                 retrieved_dict = r.hgetall('ch')
-
-    #                 for k, v in retrieved_dict.items():
-    #                     key = int(k.decode('utf-8'))
-    #                     value = int(v.decode('utf-8'))
-                        
-    #                     if 1 <= key <= 512 and 0 <= value <= 255:
-    #                         all_channels.set(key, value)
-
-    #                 interface.set_frame(universe.serialise())
-    #                 interface.send_update()
-
-    #                 # # Convert the retrieved values back to integers
-    #                 # int_dict = {int(k.decode('utf-8')): int(v.decode('utf-8')) for k, v in retrieved_dict.items()}
-
-    #                 # data = r.lrange('dmx-channels', 0, -1)
-    #                 # print([item.decode('utf-8') for item in data])
-    #                 time.sleep(0.5)
-    #     except Exception as e:
-    #         print(f"Error: {e}. Retrying in 1 second...")
-    #         time.sleep(1)
-    #         r = None
 
 if __name__ == "__main__":
     main()
