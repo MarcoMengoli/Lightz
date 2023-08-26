@@ -63,7 +63,4 @@ class InMemGateway:
             return []
 
     def close(self):
-        try:
-            self.client.close()
-        except Exception as e:
-            print(f"Error closing connection: {e}")
+        pass
