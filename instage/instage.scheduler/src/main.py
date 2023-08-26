@@ -83,7 +83,6 @@ def main():
         except Exception as e:
             print(f"Error: {e}. Retrying in 1 second...")
             time.sleep(1)
-            gateway.close()
             r = None
 
 
